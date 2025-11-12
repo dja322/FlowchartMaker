@@ -2,6 +2,6 @@
 
 import src.interface
 
-__version__ = "0.1.0"
-__author__ = "Me"
+__version__ = "0.1.2"
+__author__ = "dja322"
 __name__ = "Flowchart Maker"

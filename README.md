@@ -11,7 +11,7 @@ Built using Python and tkinter.
  - edit connections between nodes
 
 ## Requirements
-I used python 3.12, not tested with older versions
+Created using python version 3.12
 
 ## Installation
 Clone repository and run FlowMaker.py
