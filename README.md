@@ -20,4 +20,4 @@ Clone repository and run FlowMaker.py
 github @dja322
 
 ## License
-This project is under the MIT License.
+This project is under the GNU General Public License v3.
