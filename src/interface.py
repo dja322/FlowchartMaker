@@ -49,6 +49,7 @@ def cmdInterface(ROWHEIGHT, COLHEIGHT):
         #updates the graphics
         updateGraphics(nodeList)
 
+    t1.join()
 
 #Menu function
 def printMenu():

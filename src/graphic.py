@@ -26,6 +26,7 @@ class graphicManager:
         #INITIALIZES TKINTER STUFF
         self.root = tk.Tk()
         self.root.geometry(f"{ROWHEIGHT}x{COLHEIGHT}")
+        tk.Button(self.root, text="Quit", command=self.root.destroy).pack()
         listSize = len(NodeList)
         if listSize < 1:
             listSize = 1
@@ -64,8 +65,6 @@ class graphicManager:
             if (x_position >= listSize):
                 x_position = 0
                 y_position += 1
-                if (y_position >= listSize):
-                    print("TILES FULL")
         
         #yield root, tiles, textTiles
         #run display
