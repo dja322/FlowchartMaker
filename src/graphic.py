@@ -1,4 +1,5 @@
 import tkinter as tk
+import math
 
 class graphicManager:
     tiles = []
@@ -57,7 +58,7 @@ class graphicManager:
                                     fill="gray")
             
             self.textTiles[x_position][y_position] = self.c.create_text(
-                (x1 + x2) / 2, (y1 + y2) / 2, text=f"{node.getID()} {node.getLabel()}")
+                (x1 + x2) / 2, (y1 + y2) / 2, text=f"ID:{node.getID()}\nLabel:{node.getLabel()}")
             
             x_position += 1
             if (x_position >= listSize):
@@ -86,51 +87,49 @@ class graphicManager:
         
         #Create graphic constants
         OFFSET = 5
-        col_width = COLHEIGHT/listSize
-        row_height = ROWHEIGHT/listSize
+        width = COLHEIGHT
+        height = ROWHEIGHT
+        center_x = width / 2
+        center_y = height / 2
+        radius = min(width, height) / 2.5  # Keep nodes inside the canvas
 
-        sizeOfRectangles = 0
+        # Place nodes in a circular layout
+        for i, node in enumerate(NodeList):
+            angle = (2 * math.pi / listSize) * i
+            # Compute node center position
+            node_x = center_x + radius * math.cos(angle)
+            node_y = center_y + radius * math.sin(angle)
+            node_radius = 80  # Size of node circles
 
-        x_position: int = 0
-        y_position: int = 0
-        #places all nodes and text within
-        for node in NodeList:
-            x1 = x_position*col_width
-            y1 = y_position*row_height
-            x2 = (x_position+1)*col_width
-            y2 = (y_position+1)*row_height
-            self.tiles[x_position][y_position] = self.c.create_oval(
-                                    x1 + OFFSET, y1 + OFFSET,
-                                    x2 - OFFSET, y2 - OFFSET,
-                                    fill="gray")
-            
-            self.textTiles[x_position][y_position] = self.c.create_text(
-                (x1 + x2) / 2, (y1 + y2) / 2, text=f"{node.getID()} {node.getLabel()}")
-            
-            nodeLocations.append([node, x_position, y_position])
-            #calculate size of rectangle for line drawing
-            sizeOfRectangles = abs(x2 - x1)
-            
-            #iterate through dimensions
-            x_position += 1
-            if (x_position >= listSize):
-                x_position = 0
-                y_position += 1
-                if (y_position >= listSize):
-                    print("TILES FULL")
+            # Draw node circle
+            self.tiles[i][0] = self.c.create_oval(
+                node_x - node_radius + OFFSET,
+                node_y - node_radius + OFFSET,
+                node_x + node_radius - OFFSET,
+                node_y + node_radius - OFFSET,
+                fill="gray"
+            )
 
-        #Create arrows between connections
+            # Draw text label
+            self.textTiles[i][0] = self.c.create_text(
+                node_x, node_y,
+                text=f"ID:{node.getID()}\nLabel:{node.getLabel()}"
+            )
+
+            # Store location for connection lines
+            nodeLocations.append([node, node_x, node_y])
+
+        # Draw connection arrows
         for nodeLoc in nodeLocations:
             connections = nodeLoc[0].getCopyOfConnections()
             for connection in connections:
                 loc = next((sub for sub in nodeLocations if connection[0] == nodeLoc[0].getID()), None)
                 if (loc != None):
-                    x1 = loc[1]*col_width + sizeOfRectangles / 2 + 20
-                    y1 = loc[2]*row_height + sizeOfRectangles / 2 + 20
-                    x2 = nodeLoc[1]*col_width + sizeOfRectangles / 2 - 20
-                    y2 = nodeLoc[2]*row_height + sizeOfRectangles / 2 + 20
+                    x1 = loc[1]
+                    y1 = loc[2] + node_radius
+                    x2 = nodeLoc[1]
+                    y2 = nodeLoc[2] + node_radius
                     self.c.create_line(x1, y1, x2, y2, width=5, arrow=tk.LAST)
 
-        #Does something maybe
         self.c.pack()
     
