@@ -2,18 +2,20 @@ import tkinter as tk
 import math
 
 class graphicManager:
-    tiles = []
-    textTiles = []
-    c = None
-    root = None
+    tiles: list = []
+    textTiles: list = []
+    c: tk.Canvas | None = None
+    root: tk.Tk | None = None
+    node_radius: int = 80
+
 
     # Function to destroy the button using its ID
-    def clear_widgets(self):
+    def clear_widgets(self) -> None:
         if self.c is not None:
             self.c.delete("all")
 
     #reinitializes Arrays, not good I know
-    def reinitializeArrays(self, NodeList):
+    def reinitializeArrays(self, NodeList: list) -> None:
         listSize = len(NodeList)
         if listSize < 1:
             listSize = 1
@@ -22,16 +24,11 @@ class graphicManager:
         self.tiles = [empty_row.copy() for _ in range(listSize)]
         self.textTiles = [empty_row.copy() for _ in range(listSize)]
 
-    def initWindow(self, ROWHEIGHT, COLHEIGHT, NodeList):
+    def initWindow(self, ROWHEIGHT, COLHEIGHT, NodeList) -> None:
         #INITIALIZES TKINTER STUFF
         self.root = tk.Tk()
         self.root.geometry(f"{ROWHEIGHT}x{COLHEIGHT}")
         tk.Button(self.root, text="Quit", command=self.root.destroy).pack()
-        listSize = len(NodeList)
-        if listSize < 1:
-            listSize = 1
-
-        self.reinitializeArrays(NodeList)
 
         #initialize tKinter Canvas
         self.c = tk.Canvas(
@@ -40,37 +37,10 @@ class graphicManager:
         #pack Canvas
         self.c.pack()
 
-        #Create graphic constants
-        OFFSET = 5
-        col_width = COLHEIGHT/listSize
-        row_height = ROWHEIGHT/listSize
-
-        #positions nodes
-        x_position: int = 0
-        y_position: int = 0
-        for node in NodeList:
-            x1 = x_position*col_width
-            y1 = y_position*row_height
-            x2 = (x_position+1)*col_width
-            y2 = (y_position+1)*row_height
-            self.tiles[x_position][y_position] = self.c.create_oval(
-                                    x1 + OFFSET, y1 + OFFSET,
-                                    x2 - OFFSET, y2 - OFFSET,
-                                    fill=node.getColor())
-            
-            self.textTiles[x_position][y_position] = self.c.create_text(
-                (x1 + x2) / 2, (y1 + y2) / 2, text=f"ID:{node.getID()}\nLabel:{node.getLabel()}")
-            
-            x_position += 1
-            if (x_position >= listSize):
-                x_position = 0
-                y_position += 1
-        
-        #yield root, tiles, textTiles
         #run display
         self.root.mainloop()
 
-    def updateGraphic(self, ROWHEIGHT, COLHEIGHT, NodeList):
+    def updateGraphic(self, ROWHEIGHT, COLHEIGHT, NodeList) -> None:
         #ensures no crashes from self.c being nothing
         if (self.c == None):
             return
@@ -98,14 +68,13 @@ class graphicManager:
             # Compute node center position
             node_x = center_x + radius * math.cos(angle)
             node_y = center_y + radius * math.sin(angle)
-            node_radius = 80  # Size of node circles
 
             # Draw node circle
             self.tiles[i][0] = self.c.create_oval(
-                node_x - node_radius + OFFSET,
-                node_y - node_radius + OFFSET,
-                node_x + node_radius - OFFSET,
-                node_y + node_radius - OFFSET,
+                node_x - self.node_radius + OFFSET,
+                node_y - self.node_radius + OFFSET,
+                node_x + self.node_radius - OFFSET,
+                node_y + self.node_radius - OFFSET,
                 fill=node.getColor()
             )
 
@@ -125,9 +94,9 @@ class graphicManager:
                 loc = next((sub for sub in nodeLocations if connection[0] == nodeLoc[0].getID()), None)
                 if (loc != None):
                     x1 = loc[1]
-                    y1 = loc[2] + node_radius
+                    y1 = loc[2] + self.node_radius
                     x2 = nodeLoc[1]
-                    y2 = nodeLoc[2] + node_radius
+                    y2 = nodeLoc[2] + self.node_radius
                     self.c.create_line(x1, y1, x2, y2, width=5, arrow=tk.LAST, fill=connection[1])
 
         self.c.pack()

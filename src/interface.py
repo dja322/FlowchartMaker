@@ -32,10 +32,10 @@ tkinter_unique_colors = [
 updateFunction = None
 g_manager = graphic.graphicManager()
 
-def updateGraphics(nodes):
+def updateGraphics(nodes) -> None:
     g_manager.updateGraphic(Rowheight, Colheight, nodes)
 
-def cmdInterface(ROWHEIGHT, COLHEIGHT):
+def cmdInterface(ROWHEIGHT: int, COLHEIGHT: int) -> None:
     print(len(tkinter_unique_colors))
     nodeList = []
 
@@ -83,7 +83,7 @@ def cmdInterface(ROWHEIGHT, COLHEIGHT):
     t1.join()
 
 #Menu function
-def printMenu():
+def printMenu() -> None:
     print("""
 --- MAIN MENU ---
 1. Add Node
@@ -96,7 +96,7 @@ def printMenu():
 """)
     
 #checks if id is present in node list
-def checkNodeListForID(nodeList, id) -> bool:
+def checkNodeListForID(nodeList: list, id: str) -> bool:
     result = next((sub for sub in nodeList if id == sub.getID()), None)
     if result == None:
         return True
@@ -121,7 +121,7 @@ def addNode(nodeList) -> node.Node:
     return node.Node(id, label, color)
 
 #add connection between two nodes
-def addConnection(nodeList):
+def addConnection(nodeList: list) -> None:
     nodeID = ""
     srcNode = None
     print("Enter 'exit' to return to main menu")
@@ -150,7 +150,7 @@ def addConnection(nodeList):
                     updateGraphics(nodeList)
 
 #Remove connection between two nodes
-def removeConnection(nodeList):
+def removeConnection(nodeList: list) -> None:
     nodeID = ""
     result = None
     print("Enter 'exit' to return to main menu")
@@ -171,7 +171,7 @@ def removeConnection(nodeList):
                     result.deleteConnection(nodeID)
                     updateGraphics(nodeList)
 
-def removeNode(nodeList):
+def removeNode(nodeList: list) -> None:
     nodeID = ""
     result = None
     print("Enter 'exit' to return to main menu")

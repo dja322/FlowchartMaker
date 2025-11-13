@@ -6,14 +6,14 @@ class Node:
     Holds its ID, label, conections, if it is an entry/exit point, and color
     '''
 
-    __label = None #Name to display
-    __id = None #Unique ID
-    __NodesToFlowTo = [] #Holds tuples for nodes this node flows to and color of connection, [id, color]
-    __entryPoint = False
-    __exitPoint = False
-    __color = 'gray'
+    __label: str = '' #Name to display
+    __id: str = '0' #Unique ID
+    __NodesToFlowTo: list = [] #Holds tuples for nodes this node flows to and color of connection, [id, color]
+    __entryPoint: bool = False
+    __exitPoint: bool = False
+    __color: str = 'gray'
 
-    def __init__(self, label, id, color='gray', entryPoint=False, exitPoint=False):
+    def __init__(self, label: str, id: str, color: str='gray', entryPoint:bool=False, exitPoint:bool=False):
         self.setLabel(label)
         self.setID(id)
         self.setEntryPoint(entryPoint)
@@ -21,22 +21,22 @@ class Node:
         self.setColor(color)
 
     #get methods
-    def getID(self):
+    def getID(self) -> str:
         return self.__id
     
-    def getLabel(self):
+    def getLabel(self) -> str:
         return self.__label
     
-    def getCopyOfConnections(self):
+    def getCopyOfConnections(self) -> list:
         return self.__NodesToFlowTo.copy()
     
-    def getEntryPoint(self):
+    def getEntryPoint(self) -> bool:
         return self.__entryPoint
     
-    def getExitPoint(self):
+    def getExitPoint(self) -> bool:
         return self.__exitPoint
     
-    def getColor(self):
+    def getColor(self) -> str:
         return self.__color
     
     # Setter methods
@@ -46,19 +46,19 @@ class Node:
     def setLabel(self, label):
         self.__label = label
     
-    def setEntryPoint(self, entryPoint):
+    def setEntryPoint(self, entryPoint: bool):
         self.__entryPoint = entryPoint
     
-    def setExitPoint(self, exitPoint):
+    def setExitPoint(self, exitPoint: bool):
         self.__exitPoint = exitPoint
 
-    def setColor(self, color):
+    def setColor(self, color: str):
         if (self.__isValidColor(color)):
             self.__color = color
         else:
             self.__color = 'gray'
     
-    def __isValidColor(self, color):
+    def __isValidColor(self, color: str='gray') -> bool:
         root = tk.Tk()
         root.withdraw()  # hide main window
         try:
@@ -71,7 +71,7 @@ class Node:
     #Node flow functions
 
     #Adds a node to this nodes list of where it flows to
-    def addNode(self, nodeID, color='gray'):
+    def addNode(self, nodeID:str, color:str='gray'):
         if (self.__isValidColor(color)):
             if (nodeID, color) not in self.__NodesToFlowTo:
                 self.__NodesToFlowTo.append((nodeID, color))
@@ -80,7 +80,7 @@ class Node:
                 self.__NodesToFlowTo.append((nodeID, 'gray'))
 
     #deletes connections from this node to another node
-    def deleteConnection(self, nodeID, description = "",  deleteAllFlowsToID = True, resetFlows = False, 
+    def deleteConnection(self, nodeID:str, color:str = "",  deleteAllFlowsToID:bool=True, resetFlows:bool=False, 
                          print_removal = True):
         if (resetFlows):
             self.__NodesToFlowTo.clear()
@@ -88,7 +88,7 @@ class Node:
             self.__NodesToFlowTo = list(filter(lambda x: nodeID not in x, self.__NodesToFlowTo))
         else:
             try:
-                self.__NodesToFlowTo.remove((nodeID, description))
+                self.__NodesToFlowTo.remove((nodeID, color))
                 if print_removal:
                     print("\nNode Conncetion removed")
             except ValueError:
