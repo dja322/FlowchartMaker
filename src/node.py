@@ -6,19 +6,13 @@ class Node:
     Holds its ID, label, conections, if it is an entry/exit point, and color
     '''
 
-    __label: str = '' #Name to display
-    __id: str = '0' #Unique ID
-    __NodesToFlowTo: list = [] #Holds tuples for nodes this node flows to and color of connection, [id, color]
-    __entryPoint: bool = False
-    __exitPoint: bool = False
-    __color: str = 'gray'
-
-    def __init__(self, label: str, id: str, color: str='gray', entryPoint:bool=False, exitPoint:bool=False):
-        self.setLabel(label)
-        self.setID(id)
-        self.setEntryPoint(entryPoint)
-        self.setExitPoint(exitPoint)
-        self.setColor(color)
+    def __init__(self, id: str, label: str, color: str='gray', entryPoint:bool=False, exitPoint:bool=False):
+        self.__id: str = id
+        self.__label: str = label
+        self.__NodesToFlowTo: list[tuple] = []
+        self.__entryPoint: bool = entryPoint
+        self.__exitPoint: bool = exitPoint
+        self.__color: str = color if self.__isValidColor(color) else 'gray'
 
     #get methods
     def getID(self) -> str:
@@ -95,8 +89,11 @@ class Node:
                 if print_removal:
                     print("\nNode connection not found")
         
+    def fileString(self):
+        return f"('{self.getID()}', '{self.getLabel()}', '{self.getColor()}', {self.getEntryPoint()}, \
+{self.getExitPoint()}, {self.getCopyOfConnections()})"
 
     def __str__(self):
-        return f"{self.__id}, {self.__label}"
+        return f"{self.getID()}, {self.getLabel()}"
         
     

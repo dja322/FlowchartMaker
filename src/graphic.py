@@ -24,7 +24,7 @@ class graphicManager:
         self.tiles = [empty_row.copy() for _ in range(listSize)]
         self.textTiles = [empty_row.copy() for _ in range(listSize)]
 
-    def initWindow(self, ROWHEIGHT, COLHEIGHT, NodeList) -> None:
+    def initWindow(self, ROWHEIGHT: int, COLHEIGHT: int) -> None:
         #INITIALIZES TKINTER STUFF
         self.root = tk.Tk()
         self.root.geometry(f"{ROWHEIGHT}x{COLHEIGHT}")
@@ -40,7 +40,7 @@ class graphicManager:
         #run display
         self.root.mainloop()
 
-    def updateGraphic(self, ROWHEIGHT, COLHEIGHT, NodeList) -> None:
+    def updateGraphic(self, ROWHEIGHT: int, COLHEIGHT: int, NodeList: list) -> None:
         #ensures no crashes from self.c being nothing
         if (self.c == None):
             return
@@ -91,12 +91,12 @@ class graphicManager:
         for nodeLoc in nodeLocations:
             connections = nodeLoc[0].getCopyOfConnections()
             for connection in connections:
-                loc = next((sub for sub in nodeLocations if connection[0] == nodeLoc[0].getID()), None)
+                loc = next((sub for sub in nodeLocations if connection[0] == sub[0].getID()), None)
                 if (loc != None):
-                    x1 = loc[1]
-                    y1 = loc[2] + self.node_radius
-                    x2 = nodeLoc[1]
-                    y2 = nodeLoc[2] + self.node_radius
+                    x1 = nodeLoc[1]
+                    y1 = nodeLoc[2] + self.node_radius
+                    x2 = loc[1]
+                    y2 = loc[2] + self.node_radius
                     self.c.create_line(x1, y1, x2, y2, width=5, arrow=tk.LAST, fill=connection[1])
 
         self.c.pack()

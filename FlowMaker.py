@@ -1,7 +1,7 @@
 import src.interface
 import sys
-
-if __name__ == "__main__":
+    
+def main() -> None:
     print("Initializing Interface")
 
     ROWHEIGHT = 1000
@@ -22,3 +22,6 @@ if __name__ == "__main__":
             print("Invalid Args, defaulting to 1000x1000 window")
 
     src.interface.cmdInterface(ROWHEIGHT, COLHEIGHT)
+
+if __name__ == "__main__":
+    main()

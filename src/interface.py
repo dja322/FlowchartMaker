@@ -2,6 +2,7 @@
 import src.node as node
 import src.graphic as graphic
 import threading
+import ast
 
 tkinter_unique_colors = [
     'aliceblue', 'antiquewhite', 'aqua', 'aquamarine', 'azure', 'beige', 'bisque', 'black',
@@ -32,11 +33,10 @@ tkinter_unique_colors = [
 updateFunction = None
 g_manager = graphic.graphicManager()
 
-def updateGraphics(nodes) -> None:
+def updateGraphics(nodes: list[node.Node]) -> None:
     g_manager.updateGraphic(Rowheight, Colheight, nodes)
 
 def cmdInterface(ROWHEIGHT: int, COLHEIGHT: int) -> None:
-    print(len(tkinter_unique_colors))
     nodeList = []
 
     global Rowheight, Colheight
@@ -46,7 +46,7 @@ def cmdInterface(ROWHEIGHT: int, COLHEIGHT: int) -> None:
     #initialize graphic variables
     
     #run graphics in separate thread
-    t1 = threading.Thread(target=g_manager.initWindow, args=(Rowheight, Colheight, nodeList))
+    t1 = threading.Thread(target=g_manager.initWindow, args=(Rowheight, Colheight))
     #starts threads
     t1.start()
 
@@ -72,7 +72,11 @@ def cmdInterface(ROWHEIGHT: int, COLHEIGHT: int) -> None:
                 print(color, end=', ')
                 if (i % 5 == 1):
                     print()
-        elif command == "7" or command == "exit":
+        elif command == '7':
+            result = saveloadNodeList(nodeList=nodeList)
+            if (result != None):
+                nodeList = result
+        elif command == "8" or command == "exit":
             break
         else:
             print("Invalid Command")
@@ -92,18 +96,72 @@ def printMenu() -> None:
 4. Remove Node
 5. Print Nodes
 6. See Full List of valid colors(147 colors)
-7. Exit
+7. Save/Load flowchart
+8. Exit
 """)
+
+#load or save node list
+def saveloadNodeList(nodeList: list[node.Node]) -> list[node.Node] | None:
+    option = input("Please enter 'S' for save or 'L' for load: ").lower()
+    if (option == 's'):
+        option = input("Enter filename to save to: ")
+        with open(option, 'w') as f:
+            for inNode in nodeList:
+                f.write(inNode.fileString() + '\n')
+        return None
+    elif(option == 'l'):
+        option = input("Enter filename to load from: ")
+        loadedNodeList: list = []
+        try:
+            with open(option, 'r') as f:
+                lines = f.readlines()
+                for line in lines:
+                    id, label, color, entrypoint, exitpoint, connections = parseLoadString(line)
+                    newNode = node.Node(id, label, color, entrypoint, exitpoint)
+                    for connection in connections:
+                        newNode.addNode(connection[0], connection[1])
+                    loadedNodeList.append(newNode)
+            return loadedNodeList
+
+        except FileNotFoundError:
+            print("File not found")
+    else:
+        print("Invalid option")
+    return None
     
+def parseLoadString(string: str):
+    try:
+        # Safely evaluate the string as a Python literal
+        parsed = ast.literal_eval(string)
+
+        # Basic structure validation
+        if not isinstance(parsed, tuple) or len(parsed) != 6:
+            raise ValueError("Input must be a tuple of length 6.")
+
+        id, label, color, entrypoint, exitpoint, connection = parsed
+
+        # Type checking
+        if not all(isinstance(x, str) for x in (id, label, color)):
+            raise TypeError("First three elements must be strings.")
+        if not all(isinstance(x, bool) for x in (entrypoint, exitpoint)):
+            raise TypeError("Fourth and fifth elements must be booleans.")
+        if not isinstance(connection, list) or not all(isinstance(t, tuple) for t in connection):
+            raise TypeError("Sixth element must be a list of tuples.")
+
+        return parsed
+
+    except Exception as e:
+        raise ValueError(f"Invalid input format: {e}")
+ 
 #checks if id is present in node list
-def checkNodeListForID(nodeList: list, id: str) -> bool:
+def checkNodeListForID(nodeList: list[node.Node], id: str) -> bool:
     result = next((sub for sub in nodeList if id == sub.getID()), None)
     if result == None:
         return True
     return False
     
 #adds a unique node to node list
-def addNode(nodeList) -> node.Node:
+def addNode(nodeList: list[node.Node]) -> node.Node:
     print("Enter 'exit' to return to main menu")
     id = input("\nNew node ID: ")
     label = ''
@@ -121,7 +179,7 @@ def addNode(nodeList) -> node.Node:
     return node.Node(id, label, color)
 
 #add connection between two nodes
-def addConnection(nodeList: list) -> None:
+def addConnection(nodeList: list[node.Node]) -> None:
     nodeID = ""
     srcNode = None
     print("Enter 'exit' to return to main menu")
@@ -150,7 +208,7 @@ def addConnection(nodeList: list) -> None:
                     updateGraphics(nodeList)
 
 #Remove connection between two nodes
-def removeConnection(nodeList: list) -> None:
+def removeConnection(nodeList: list[node.Node]) -> None:
     nodeID = ""
     result = None
     print("Enter 'exit' to return to main menu")
@@ -171,7 +229,7 @@ def removeConnection(nodeList: list) -> None:
                     result.deleteConnection(nodeID)
                     updateGraphics(nodeList)
 
-def removeNode(nodeList: list) -> None:
+def removeNode(nodeList: list[node.Node]) -> None:
     nodeID = ""
     result = None
     print("Enter 'exit' to return to main menu")
