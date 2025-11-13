@@ -3,6 +3,31 @@ import src.node as node
 import src.graphic as graphic
 import threading
 
+tkinter_unique_colors = [
+    'aliceblue', 'antiquewhite', 'aqua', 'aquamarine', 'azure', 'beige', 'bisque', 'black',
+    'blanchedalmond', 'blue', 'blueviolet', 'brown', 'burlywood', 'cadetblue', 'chartreuse',
+    'chocolate', 'coral', 'cornflowerblue', 'cornsilk', 'crimson', 'cyan', 'darkblue',
+    'darkcyan', 'darkgoldenrod', 'darkgray', 'darkgreen', 'darkgrey', 'darkkhaki',
+    'darkmagenta', 'darkolivegreen', 'darkorange', 'darkorchid', 'darkred', 'darksalmon',
+    'darkseagreen', 'darkslateblue', 'darkslategray', 'darkslategrey', 'darkturquoise',
+    'darkviolet', 'deeppink', 'deepskyblue', 'dimgray', 'dimgrey', 'dodgerblue', 'firebrick',
+    'floralwhite', 'forestgreen', 'fuchsia', 'gainsboro', 'ghostwhite', 'gold', 'goldenrod',
+    'gray', 'green', 'greenyellow', 'grey', 'honeydew', 'hotpink', 'indianred', 'indigo',
+    'ivory', 'khaki', 'lavender', 'lavenderblush', 'lawngreen', 'lemonchiffon', 'lightblue',
+    'lightcoral', 'lightcyan', 'lightgoldenrodyellow', 'lightgray', 'lightgreen', 'lightgrey',
+    'lightpink', 'lightsalmon', 'lightseagreen', 'lightskyblue', 'lightslategray',
+    'lightslategrey', 'lightsteelblue', 'lightyellow', 'lime', 'limegreen', 'linen', 'magenta',
+    'maroon', 'mediumaquamarine', 'mediumblue', 'mediumorchid', 'mediumpurple',
+    'mediumseagreen', 'mediumslateblue', 'mediumspringgreen', 'mediumturquoise',
+    'mediumvioletred', 'midnightblue', 'mintcream', 'mistyrose', 'moccasin', 'navajowhite',
+    'navy', 'oldlace', 'olive', 'olivedrab', 'orange', 'orangered', 'orchid', 'palegoldenrod',
+    'palegreen', 'paleturquoise', 'palevioletred', 'papayawhip', 'peachpuff', 'peru', 'pink',
+    'plum', 'powderblue', 'purple', 'red', 'rosybrown', 'royalblue', 'saddlebrown', 'salmon',
+    'sandybrown', 'seagreen', 'seashell', 'sienna', 'silver', 'skyblue', 'slateblue',
+    'slategray', 'slategrey', 'snow', 'springgreen', 'steelblue', 'tan', 'teal', 'thistle',
+    'tomato', 'turquoise', 'violet', 'wheat', 'white', 'whitesmoke', 'yellow', 'yellowgreen'
+]
+
 
 updateFunction = None
 g_manager = graphic.graphicManager()
@@ -11,6 +36,7 @@ def updateGraphics(nodes):
     g_manager.updateGraphic(Rowheight, Colheight, nodes)
 
 def cmdInterface(ROWHEIGHT, COLHEIGHT):
+    print(len(tkinter_unique_colors))
     nodeList = []
 
     global Rowheight, Colheight
@@ -41,7 +67,12 @@ def cmdInterface(ROWHEIGHT, COLHEIGHT):
         elif command == "5":
             for node in nodeList:
                 print(f"({node}), ", end='')
-        elif command == "6" or command == "exit":
+        elif command == "6":
+            for i, color in enumerate(tkinter_unique_colors):
+                print(color, end=', ')
+                if (i % 5 == 1):
+                    print()
+        elif command == "7" or command == "exit":
             break
         else:
             print("Invalid Command")
@@ -60,7 +91,8 @@ def printMenu():
 3. Remove Connections to Node
 4. Remove Node
 5. Print Nodes
-6. Exit
+6. See Full List of valid colors(147 colors)
+7. Exit
 """)
     
 #checks if id is present in node list
@@ -75,15 +107,18 @@ def addNode(nodeList) -> node.Node:
     print("Enter 'exit' to return to main menu")
     id = input("\nNew node ID: ")
     label = ''
+    color = 'gray'
     if (id != 'exit'):
         label = input("New node Label: ")
+        color = input("Color: ")
 
     while id != 'exit' and not checkNodeListForID(nodeList, id):
         print("Duplicate ID")
         id = input("\nID: ")
         label = input("Label: ")
+        color = input("Color: ")
 
-    return node.Node(id, label)
+    return node.Node(id, label, color)
 
 #add connection between two nodes
 def addConnection(nodeList):
@@ -108,9 +143,10 @@ def addConnection(nodeList):
                 if (result == None):
                     print("\nInvalid ID, no node found")
                 else:
-                    description = input("Connection Description: ")
-                    srcNode.addNode(nodeID, description)
+                    Color = input("Connection Color: ")
+                    srcNode.addNode(nodeID, Color)
                     print("New Connection added")
+                    print("\nAdd more connections or enter 'exit'")
                     updateGraphics(nodeList)
 
 #Remove connection between two nodes

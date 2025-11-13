@@ -56,7 +56,7 @@ class graphicManager:
             self.tiles[x_position][y_position] = self.c.create_oval(
                                     x1 + OFFSET, y1 + OFFSET,
                                     x2 - OFFSET, y2 - OFFSET,
-                                    fill="gray")
+                                    fill=node.getColor())
             
             self.textTiles[x_position][y_position] = self.c.create_text(
                 (x1 + x2) / 2, (y1 + y2) / 2, text=f"ID:{node.getID()}\nLabel:{node.getLabel()}")
@@ -106,7 +106,7 @@ class graphicManager:
                 node_y - node_radius + OFFSET,
                 node_x + node_radius - OFFSET,
                 node_y + node_radius - OFFSET,
-                fill="gray"
+                fill=node.getColor()
             )
 
             # Draw text label
@@ -128,7 +128,7 @@ class graphicManager:
                     y1 = loc[2] + node_radius
                     x2 = nodeLoc[1]
                     y2 = nodeLoc[2] + node_radius
-                    self.c.create_line(x1, y1, x2, y2, width=5, arrow=tk.LAST)
+                    self.c.create_line(x1, y1, x2, y2, width=5, arrow=tk.LAST, fill=connection[1])
 
         self.c.pack()
     
