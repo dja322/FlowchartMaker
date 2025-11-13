@@ -103,12 +103,14 @@ def printMenu() -> None:
 #load or save node list
 def saveloadNodeList(nodeList: list[node.Node]) -> list[node.Node] | None:
     option = input("Please enter 'S' for save or 'L' for load: ").lower()
+    #Save nodelist to user file
     if (option == 's'):
         option = input("Enter filename to save to: ")
         with open(option, 'w') as f:
             for inNode in nodeList:
                 f.write(inNode.fileString() + '\n')
         return None
+    #Load nodeList from inputted file
     elif(option == 'l'):
         option = input("Enter filename to load from: ")
         loadedNodeList: list = []
@@ -116,11 +118,13 @@ def saveloadNodeList(nodeList: list[node.Node]) -> list[node.Node] | None:
             with open(option, 'r') as f:
                 lines = f.readlines()
                 for line in lines:
-                    id, label, color, entrypoint, exitpoint, connections = parseLoadString(line)
-                    newNode = node.Node(id, label, color, entrypoint, exitpoint)
-                    for connection in connections:
-                        newNode.addNode(connection[0], connection[1])
-                    loadedNodeList.append(newNode)
+                    parsedLine = parseLoadString(line)
+                    if (parsedLine != None):
+                        id, label, color, entrypoint, exitpoint, connections = parsedLine
+                        newNode = node.Node(id, label, color, entrypoint, exitpoint)
+                        for connection in connections:
+                            newNode.addNode(connection[0], connection[1])
+                        loadedNodeList.append(newNode)
             return loadedNodeList
 
         except FileNotFoundError:
@@ -129,7 +133,7 @@ def saveloadNodeList(nodeList: list[node.Node]) -> list[node.Node] | None:
         print("Invalid option")
     return None
     
-def parseLoadString(string: str):
+def parseLoadString(string: str) -> tuple | None:
     try:
         # Safely evaluate the string as a Python literal
         parsed = ast.literal_eval(string)
@@ -151,7 +155,8 @@ def parseLoadString(string: str):
         return parsed
 
     except Exception as e:
-        raise ValueError(f"Invalid input format: {e}")
+        print("Error loading file, invalid format")
+        return None
  
 #checks if id is present in node list
 def checkNodeListForID(nodeList: list[node.Node], id: str) -> bool:
