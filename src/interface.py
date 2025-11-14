@@ -36,19 +36,21 @@ g_manager = graphic.graphicManager()
 def updateGraphics(nodes: list[node.Node]) -> None:
     g_manager.updateGraphic(Rowheight, Colheight, nodes)
 
-def cmdInterface(ROWHEIGHT: int, COLHEIGHT: int) -> None:
-    nodeList = []
-
+def runInterface(ROWHEIGHT: int, COLHEIGHT: int) -> None:
+    #initialize graphic variables
     global Rowheight, Colheight
     Rowheight = ROWHEIGHT
     Colheight = COLHEIGHT
 
-    #initialize graphic variables
-    
     #run graphics in separate thread
-    t1 = threading.Thread(target=g_manager.initWindow, args=(Rowheight, Colheight))
+    t1 = threading.Thread(target=cmdInterface, args=())
     #starts threads
     t1.start()
+
+    g_manager.initWindow(Rowheight, Colheight)
+
+def cmdInterface() -> None:
+    nodeList = []
 
     while True:
         printMenu()
@@ -84,7 +86,6 @@ def cmdInterface(ROWHEIGHT: int, COLHEIGHT: int) -> None:
         #updates the graphics
         updateGraphics(nodeList)
 
-    t1.join()
 
 #Menu function
 def printMenu() -> None:

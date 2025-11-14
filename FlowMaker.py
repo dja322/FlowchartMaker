@@ -21,7 +21,7 @@ def main() -> None:
         except:
             print("Invalid Args, defaulting to 1000x1000 window")
 
-    src.interface.cmdInterface(ROWHEIGHT, COLHEIGHT)
+    src.interface.runInterface(ROWHEIGHT, COLHEIGHT)
 
 if __name__ == "__main__":
     main()
