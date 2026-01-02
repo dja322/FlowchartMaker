@@ -67,8 +67,14 @@ def cmdInterface() -> None:
         elif command == "4":
             removeNode(nodeList=nodeList)
         elif command == "5":
-            for node in nodeList:
-                print(f"({node}), ", end='')
+            verbose = input("Verbose print? (y/n): ").lower()
+            if (verbose == 'y'):
+                for node in nodeList:
+                    print(f"{node}, Connections: {node.getCopyOfConnections()}, \
+EntryPoint: {node.getEntryPoint()} Exitpoint: {node.getExitPoint()}\n")
+            else:
+                for node in nodeList:
+                    print(f"({node}), ", end='')
         elif command == "6":
             for i, color in enumerate(tkinter_unique_colors):
                 print(color, end=', ')
@@ -172,17 +178,30 @@ def addNode(nodeList: list[node.Node]) -> node.Node:
     id = input("\nNew node ID: ")
     label = ''
     color = 'gray'
+    entryPointInput = 'n'
+    exitPointInput = 'n'
+    entryPoint = False
+    exitPoint = False
     if (id != 'exit'):
         label = input("New node Label: ")
         color = input("Color: ")
+        entryPointInput = input("Is Entry Point? (y/n): ").lower()
+        exitPointInput = input("Is Exit Point? (y/n): ").lower()
 
     while id != 'exit' and not checkNodeListForID(nodeList, id):
         print("Duplicate ID")
         id = input("\nID: ")
         label = input("Label: ")
         color = input("Color: ")
+        entryPointInput = input("Is Entry Point? (y/n): ").lower()
+        exitPointInput = input("Is Exit Point? (y/n): ").lower()
 
-    return node.Node(id, label, color)
+    if (entryPointInput == 'y'):
+        entryPoint = True
+    if (exitPointInput == 'y'):
+        exitPoint = True
+
+    return node.Node(id=id, label=label, color=color, entryPoint=entryPoint, exitPoint=exitPoint)
 
 #add connection between two nodes
 def addConnection(nodeList: list[node.Node]) -> None:

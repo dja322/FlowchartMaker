@@ -34,10 +34,10 @@ class Node:
         return self.__color
     
     # Setter methods
-    def setID(self, id):
+    def setID(self, id: str):
         self.__id = id
     
-    def setLabel(self, label):
+    def setLabel(self, label: str):
         self.__label = label
     
     def setEntryPoint(self, entryPoint: bool):
@@ -62,6 +62,7 @@ class Node:
             return False
         finally:
             root.destroy()
+
     #Node flow functions
 
     #Adds a node to this nodes list of where it flows to

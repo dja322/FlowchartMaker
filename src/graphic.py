@@ -77,6 +77,14 @@ class graphicManager:
                 node_y + self.node_radius - OFFSET,
                 fill=node.getColor()
             )
+            if (node.getEntryPoint()):
+                self.c.create_line(node_x + self.node_radius + OFFSET, node_y, 
+                                   node_x + self.node_radius, node_y,
+                                   width=10, arrow=tk.LAST, fill='green')
+            if (node.getExitPoint()):
+                self.c.create_line(node_x - self.node_radius, node_y,
+                                   node_x - self.node_radius - OFFSET, node_y,
+                                   width=10, arrow=tk.LAST, fill='red')
 
             # Draw text label
             self.textTiles[i][0] = self.c.create_text(
